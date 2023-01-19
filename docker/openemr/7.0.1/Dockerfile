@@ -82,6 +82,9 @@ COPY utilities/devtoolsLibrary.source /root/
 RUN mkdir /swarm-pieces \
     && rsync --owner --group --perms --delete --recursive --links /etc/ssl /swarm-pieces/ \
     && rsync --owner --group --perms --delete --recursive --links /var/www/localhost/htdocs/openemr/sites /swarm-pieces/
+
+RUN apk add mariadb-connector-c
+
 #go
 CMD [ "./openemr.sh" ]
 
