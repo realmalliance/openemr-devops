@@ -79,7 +79,7 @@ installOpenemr() {
 
 demoData() {
     echo "Install demo data"
-    mysqldump -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" --add-drop-table --no-data "$CUSTOM_DATABASE" | grep ^DROP | awk ' BEGIN { print "SET FOREIGN_KEY_CHECKS=0;" } { print $0 } END { print "SET FOREIGN_KEY_CHECKS=1;" } ' | mysql -u root --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE"
+    mysqldump -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" --add-drop-table --no-data "$CUSTOM_DATABASE" | grep ^DROP | awk ' BEGIN { print "SET FOREIGN_KEY_CHECKS=0;" } { print $0 } END { print "SET FOREIGN_KEY_CHECKS=1;" } ' | mysql -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE"
     mysql -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE" < /root/demo_5_0_0_5.sql
     upgradeOpenEMR 5.0.0
     changeEncodingCollation utf8mb4 utf8mb4_general_ci
@@ -122,7 +122,7 @@ restoreOpenemr() {
     cd /snapshots
     tar -xzf "${1}.tgz"
     # need to empty the database before the restore database import
-    mysqldump -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" --add-drop-table --no-data "$CUSTOM_DATABASE" | grep ^DROP | awk ' BEGIN { print "SET FOREIGN_KEY_CHECKS=0;" } { print $0 } END { print "SET FOREIGN_KEY_CHECKS=1;" } ' | mysql -u root --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE"
+    mysqldump -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" --add-drop-table --no-data "$CUSTOM_DATABASE" | grep ^DROP | awk ' BEGIN { print "SET FOREIGN_KEY_CHECKS=0;" } { print $0 } END { print "SET FOREIGN_KEY_CHECKS=1;" } ' | mysql -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE"
     mysql -u "$CUSTOM_ROOT_USER" --password="$MYSQL_ROOT_PASS" -h "$MYSQL_HOST" -P "$CUSTOM_PORT" "$CUSTOM_DATABASE" < "/snapshots/${1}/backup.sql"
     # note keeping same sqlconf.php in case snapshot is from somewhere else (ie. such as the demo farm) with different credentials
     sqlconf=`cat /var/www/localhost/htdocs/openemr/sites/default/sqlconf.php`
